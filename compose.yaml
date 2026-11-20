@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: accounting
+      POSTGRES_USER: accounting
+      POSTGRES_PASSWORD: secret           # hanya untuk lokal
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "accounting"]
+      interval: 5s
+volumes:
+  pgdata:
+
+# docker compose up -d       -> jalankan
+# docker compose down -v     -> hapus beserta data (database bersih)

@@ -1,0 +1,10 @@
+# Profile dev: aktif otomatis saat ./mvnw spring-boot:run
+spring:
+  jpa:
+    properties:
+      hibernate.format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG               # tampilkan SQL di log (lokal)
+    org.flywaydb: INFO

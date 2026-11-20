@@ -1,4 +1,4 @@
-package id.autochem.belajar_sesi2;
+package id.autochem.belajarsesi2;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

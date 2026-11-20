@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'id.autochem.belajar-sesi2' is invalid and this project uses 'id.autochem.belajar_sesi2' instead.
+* The original package name 'id.autochem.belajar-sesi2' is invalid and this project uses 'id.autochem.belajarsesi2' instead.
 
 # Getting Started
 

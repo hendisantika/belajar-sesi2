@@ -36,8 +36,8 @@ src/main/resources
 ├── application.yml                  # datasource via env var, ddl-auto: validate
 ├── application-dev.yml              # log SQL untuk lokal
 └── db/migration/
-    ├── V1__create_account.sql
-    └── V2__seed_chart_of_accounts.sql
+    ├── V1_21112026_0246__create_account.sql
+    └── V2_21112026_0247__seed_chart_of_accounts.sql
 compose.yaml                         # PostgreSQL lokal
 docs/liquibase/                      # Track B (pengayaan)
 ```
@@ -61,8 +61,8 @@ docs/liquibase/                      # Track B (pengayaan)
 | 6 | Entity `Account`: aturan bisnis (`of`, `rename`, `deactivate`) | `coa/model/Account.java` |
 | 7 | Repository (derived query) | `coa/repository/AccountRepository.java` |
 | 8 | Service (constructor injection, transaksi) | `coa/service/AccountService.java` |
-| 9A | Migrasi V1: tabel account | `db/migration/V1__create_account.sql` |
-| 10A | Seed COA (V2) | `db/migration/V2__seed_chart_of_accounts.sql` |
+| 9A | Migrasi V1: tabel account | `db/migration/V1_21112026_0246__create_account.sql` |
+| 10A | Seed COA (V2) | `db/migration/V2_21112026_0247__seed_chart_of_accounts.sql` |
 | 11A | Jalankan & verifikasi | lihat di bawah |
 | 9B–13B | Track Liquibase | `docs/liquibase/README.md` |
 | 14 | Uji `ddl-auto: validate` | lihat di bawah |
@@ -75,6 +75,25 @@ docs/liquibase/                      # Track B (pengayaan)
 - Tipe akun anak **harus sama** dengan induknya
 - Kode harus unik; akun induk harus sudah ada
 - Akun tanpa induk = akun header
+
+### Konvensi nama file migrasi
+
+Format: **`Vx_ddmmyyyy_hhmm__description.sql`**
+
+| Bagian | Contoh | Arti |
+|---|---|---|
+| `V` | `V` | Prefix versioned migration |
+| `x` | `1` | Nomor urut migrasi (penentu urutan eksekusi) |
+| `ddmmyyyy_hhmm` | `21112026_0246` | Tanggal & jam file dibuat |
+| `__` | `__` | Pemisah (2 underscore) |
+| `description` | `create_account` | Deskripsi, underscore jadi spasi di history |
+
+Flyway membaca `_` di bagian versi sebagai titik, jadi `V1_21112026_0246__create_account.sql`
+tercatat sebagai versi `1.21112026.0246` dengan deskripsi `create account`.
+Nomor urut `x` selalu naik sehingga urutan tetap benar walau tanggal tidak berurutan.
+
+> Database lokal yang sudah dimigrasi dengan nama file lama (`V1__...`) harus dibuat ulang:
+> `docker compose down -v && docker compose up -d`.
 
 ## Menjalankan
 
@@ -90,9 +109,9 @@ Log yang diharapkan:
 
 ```
 Successfully validated 2 migrations
-Migrating schema "public" to version "1 - create account"
-Migrating schema "public" to version "2 - seed chart of accounts"
-Successfully applied 2 migrations to schema "public", now at version v2
+Migrating schema "public" to version "1.21112026.0246 - create account"
+Migrating schema "public" to version "2.21112026.0247 - seed chart of accounts"
+Successfully applied 2 migrations to schema "public", now at version v2.21112026.0247
 CoaSmokeRunner : Tersimpan id=14 code=1103
 CoaSmokeRunner : findById: Kas Kecil
 CoaSmokeRunner : Jumlah akun: 14
@@ -135,7 +154,7 @@ Hasil: 13 akun dari seed (5 header + 8 detail) ditambah `1103 Kas Kecil` dari ru
 
 ### Step 14 · Uji `ddl-auto: validate`
 
-Eksperimen di database bersih: hapus kolom `updated_at` dari `V1__create_account.sql`, lalu jalankan aplikasi.
+Eksperimen di database bersih: hapus kolom `updated_at` dari `V1_21112026_0246__create_account.sql`, lalu jalankan aplikasi.
 
 ```
 APPLICATION FAILED TO START
@@ -144,7 +163,7 @@ org.hibernate.tool.schema.spi.SchemaManagementException:
 ```
 
 Startup yang gagal di sini adalah **fitur**: ketidakcocokan entity dan skema ketahuan sebelum production.
-Solusi yang benar adalah menambah **migrasi baru** (`V3__add_updated_at_to_account.sql`), bukan mengedit
+Solusi yang benar adalah menambah **migrasi baru** (misalnya `V3_22112026_0900__add_updated_at_to_account.sql`), bukan mengedit
 migrasi lama dan bukan mengganti `ddl-auto` ke `update`. Kembalikan file V1 setelah eksperimen.
 
 ## Test
@@ -163,7 +182,7 @@ migrasi lama dan bukan mengganti `ddl-auto` ke `update`. Kembalikan file V1 sete
 | Lakukan | Hindari |
 |---|---|
 | Satu perubahan logis per file | Mengedit file yang sudah dijalankan (checksum mismatch) |
-| Nama deskriptif: `V7__add_index_journal_date` | `ddl-auto: update` di production |
+| Nama deskriptif: `V7_01122026_1030__add_index_journal_date.sql` | `ddl-auto: update` di production |
 | Review file migrasi di Pull Request | Mengedit `flyway_schema_history` manual |
 | Uji migrasi dari nol di CI (Testcontainers) | `clean` di environment selain lokal |
 | Backup sebelum migrasi besar di production | Migrasi berat yang mengunci tabel besar tanpa rencana |

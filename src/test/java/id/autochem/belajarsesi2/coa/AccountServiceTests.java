@@ -47,7 +47,8 @@ class AccountServiceTests {
         List<String> versions = jdbc.queryForList(
                 "select version from flyway_schema_history where success order by installed_rank",
                 String.class);
-        assertThat(versions).containsExactly("1", "2");
+        // Format file: Vx_ddmmyyyy_hhmm__description.sql -> versi x.ddmmyyyy.hhmm
+        assertThat(versions).containsExactly("1.21112026.0246", "2.21112026.0247");
     }
 
     @Test

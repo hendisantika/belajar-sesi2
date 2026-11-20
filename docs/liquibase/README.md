@@ -73,7 +73,7 @@ Konfigurasi plugin (tambahkan di `<build><plugins>`):
 | Aspek | Flyway | Liquibase |
 |---|---|---|
 | Format migrasi | SQL (atau Java) | YAML, XML, JSON, atau SQL |
-| Unit perubahan | File berversi `V1__`, `V2__` | Changeset (id + author) dalam changelog |
+| Unit perubahan | File berversi `V1_ddmmyyyy_hhmm__`, `V2_...__` | Changeset (id + author) dalam changelog |
 | Urutan | Nomor versi di nama file | Urutan di master changelog |
 | Rollback | Undo = edisi berbayar; biasanya roll-forward | Rollback bawaan (otomatis/eksplisit) |
 | Per environment | `locations` per profile | `contexts` & `labels` |

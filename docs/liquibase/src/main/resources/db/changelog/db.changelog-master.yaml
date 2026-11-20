@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/001-create-account.sql
+  - include:
+      file: db/changelog/changes/002-seed-chart-of-accounts.sql
+
+# Urutan include = urutan eksekusi.
+# Changeset juga bisa ditulis dalam YAML (lihat slide "Changeset dalam YAML");
+# di lab ini dipakai formatted SQL agar sama dengan track Flyway.
